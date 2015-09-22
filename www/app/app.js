@@ -1,25 +1,9 @@
 // Make sure to include the `ui.router` module as a dependency
 angular.module('uiRouterSample', [
-    'uiRouterSample.projects',
-    'uiRouterSample.projects.service',
-    'uiRouterSample.containers.service',
-    'uiRouterSample.proxy.service',
-    'uiRouterSample.tasks.service',
-    'uiRouterSample.clusters.service',
-    'uiRouterSample.servers',
-    'uiRouterSample.servers.service',
-    'uiRouterSample.settings',
-    'uiRouterSample.settings.service',
-    'uiRouterSample.users',
-    'uiRouterSample.users.service',
-    'uiRouterSample.rules',
-    'uiRouterSample.rules.service',
+    'uiRouterSample.cars',
+    'uiRouterSample.cars.service',
     'uiRouterSample.home',
     'uiRouterSample.home.service',
-    'uiRouterSample.roles',
-    'uiRouterSample.roles.service',
-    'uiRouterSample.authn',
-    'uiRouterSample.authn.service',
     'uiRouterSample.utils.service',
     'angularSpinner',
     'ui.router',
@@ -58,23 +42,8 @@ angular.module('uiRouterSample', [
 
             // The `when` method says if the url is ever the 1st param, then redirect to the 2nd param
             // Here we are just setting up some convenience urls.
-                .when('/p?id', '/projects/:id')
-                .when('/project/:id', '/projects/:id')
-                //.when('/c?id', '/containers/:id/details')
-                .when('/container/:id', '/containers/:id')
                 .when('/s?id', '/servers/:id')
                 .when('/server/:id', '/servers/:id')
-                .when('/t?id', '/settings/:id')
-                .when('/setting/:id', '/settings/:id')
-                .when('/u?id', '/users/:id')
-                .when('/user/:id', '/users/:id')
-                .when('/x?id', '/profiles/:id')
-                .when('/profile/:id', '/profiles/:id')
-                .when('/r?id', '/roles/:id')
-                .when('/role/:id', '/roles/:id')
-                .when('/n?id', '/login/:id')
-                .when('/l?id', '/clusters/:id')
-                .when('/cluster/:id', '/clusters/:id')
 
             // If the url is ever invalid, e.g. '/asdf', then redirect to '/' aka the home state
             .otherwise('/');

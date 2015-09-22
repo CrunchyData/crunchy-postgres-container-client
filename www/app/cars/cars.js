@@ -1,4 +1,4 @@
-angular.module('uiRouterSample.servers', [
+angular.module('uiRouterSample.cars', [
     'ui.router',
     'ui.bootstrap'
 ])
@@ -7,30 +7,30 @@ angular.module('uiRouterSample.servers', [
     ['$stateProvider', '$urlRouterProvider',
         function($stateProvider, $urlRouterProvider) {
             $stateProvider
-                .state('servers', {
+                .state('cars', {
 
                     abstract: true,
 
-                    url: '/servers',
+                    url: '/cars',
 
-                    templateUrl: 'app/servers/servers.html',
+                    templateUrl: 'app/cars/cars.html',
 
                     resolve: {
-                        servers: ['$cookieStore', 'serversFactory',
-                            function($cookieStore, serversFactory) {
+                        cars: ['$cookieStore', 'carsFactory',
+                            function($cookieStore, carsFactory) {
                                 if (!$cookieStore.get('cpm_token')) {
                                     var nothing = [];
                                     console.log('returning nothing');
                                     return nothing;
                                 }
 
-                                return serversFactory.all();
+                                return carsFactory.all();
                             }
                         ]
                     },
 
-                    controller: ['$scope', '$state', '$cookieStore', 'utils', 'servers',
-                        function($scope, $state, $cookieStore, utils, servers) {
+                    controller: ['$scope', '$state', '$cookieStore', 'utils', 'cars',
+                        function($scope, $state, $cookieStore, utils, cars) {
 
                             if (!$cookieStore.get('cpm_token')) {
                                 $state.go('login', {
@@ -38,14 +38,14 @@ angular.module('uiRouterSample.servers', [
                                 });
                             }
 
-                            $scope.servers = servers;
+                            $scope.cars = cars;
 
                             $scope.goToFirst = function() {
-                                if ($scope.servers.data.length > 0) {
-                                    //console.log($scope.servers.data[0].ID);
-                                    var randId = $scope.servers.data[0].ID;
+                                if ($scope.cars.data.length > 0) {
+                                    //console.log($scope.cars.data[0].ID);
+                                    var randId = $scope.cars.data[0].ID;
 
-                                    $state.go('servers.detail.details', {
+                                    $state.go('cars.detail.details', {
                                         serverId: randId
                                     });
                                 }
@@ -55,18 +55,18 @@ angular.module('uiRouterSample.servers', [
                     ]
                 })
 
-            .state('servers.list', {
+            .state('cars.list', {
 
                 url: '',
 
-                templateUrl: 'app/servers/servers.list.html',
-                controller: ['$scope', '$state', '$stateParams', 'serversFactory', 'servers', 'utils',
-                    function($scope, $state, $stateParams, serversFactory, servers, utils) {
+                templateUrl: 'app/cars/cars.list.html',
+                controller: ['$scope', '$state', '$stateParams', 'carsFactory', 'cars', 'utils',
+                    function($scope, $state, $stateParams, carsFactory, cars, utils) {
 
-                        serversFactory.all()
+                        carsFactory.all()
                             .success(function(data) {
                                 //console.log('successful get in list =' + JSON.stringify(data));
-                                $scope.servers = data;
+                                $scope.cars = data;
                             })
                             .error(function(error) {
                                 $scope.alerts = [{
@@ -77,9 +77,9 @@ angular.module('uiRouterSample.servers', [
                             });
 
 
-                        if ($scope.servers.data.length > 0) {
-                        	var randId = $scope.servers.data[0].ID;
-                            $state.go('servers.detail.details', {
+                        if ($scope.cars.data.length > 0) {
+                        	var randId = $scope.cars.data[0].ID;
+                            $state.go('cars.detail.details', {
                                 serverId: randId
                             });
                         }
@@ -88,142 +88,26 @@ angular.module('uiRouterSample.servers', [
 
             })
 
-            .state('servers.monitor', {
-                url: '/monitor/:itemId',
-                views: {
 
-                    '': {
-                        templateUrl: 'app/servers/servers.monitor.html',
-                        controller: ['$scope', '$stateParams', '$state', 'utils',
-                            function($scope, $stateParams, $state, utils) {
-                                $scope.item = utils.findById($scope.server.items, $stateParams.itemId);
-
-                                $scope.edit = function() {
-                                    $state.go('.edit', $stateParams);
-                                };
-                            }
-                        ]
-                    },
-                }
-            })
-
-            .state('servers.detail.monitor.iostat', {
-                url: '/monitor/iostat/:itemId',
-                views: {
-
-                    '': {
-                        templateUrl: 'app/servers/servers.detail.monitor.iostat.html',
-                        controller: ['$scope', '$stateParams', '$state', 'serversFactory', 'utils',
-                            function($scope, $stateParams, $state, serversFactory, utils) {
-
-                                $scope.refresh = function() {
-                                    serversFactory.iostat($stateParams.serverId)
-                                        .success(function(data) {
-                                            $scope.iostatresults = data.iostat;
-                                        })
-                                        .error(function(error) {
-                                            $scope.alerts = [{
-                                                type: 'danger',
-                                                msg: error.message
-                                            }];
-                                            console.log('here is an error ' + error.message);
-                                        });
-                                };
-
-                                $scope.refresh();
-
-                            }
-                        ]
-                    },
-                }
-            })
-
-            .state('servers.detail.monitor.df', {
-                url: '/monitor/df/:itemId',
-                views: {
-
-                    '': {
-                        templateUrl: 'app/servers/servers.detail.monitor.df.html',
-                        controller: ['$scope', '$stateParams', '$state', 'serversFactory', 'utils',
-                            function($scope, $stateParams, $state, serversFactory, utils) {
-
-                                $scope.refresh = function() {
-                                    serversFactory.df($stateParams.serverId)
-                                        .success(function(data) {
-                                            $scope.dfresults = data.df;
-                                        })
-                                        .error(function(error) {
-                                            $scope.alerts = [{
-                                                type: 'danger',
-                                                msg: error.message
-                                            }];
-                                            console.log('here is an error ' + error.message);
-                                        });
-                                };
-
-                                $scope.refresh();
-
-                            }
-                        ]
-                    },
-                }
-            })
-
-            .state('servers.detail.monitor.cpu', {
-                url: '/monitor/cpu/:itemId',
-                views: {
-
-                    '': {
-                        templateUrl: 'app/servers/servers.detail.monitor.cpu.html',
-                        controller: ['$sce', '$scope', '$stateParams', '$state', 'utils',
-                            function($sce, $scope, $stateParams, $state, utils) {
-				$scope.servergraphlink=$sce.trustAsResourceUrl('http://cpm-promdash:3000/embed/seconddashboard#!?var.host=' + $scope.server.Name);
-
-
-                                $scope.edit = function() {
-                                    $state.go('.edit', $stateParams);
-                                };
-                            }
-                        ]
-                    },
-                }
-            })
-
-            .state('servers.detail.monitor.mem', {
-                url: '/monitor/mem/:itemId',
-                views: {
-
-                    '': {
-                        templateUrl: 'app/servers/servers.detail.monitor.mem.html',
-                        controller: ['$sce', '$scope', '$stateParams', '$state', 'utils',
-                            function($sce, $scope, $stateParams, $state, utils) {
-				$scope.servergraphlink=$sce.trustAsResourceUrl('http://cpm-promdash:3000/embed/servermemdashboard#!?var.host=' + $scope.server.Name);
-
-                            }
-                        ]
-                    },
-                }
-            })
-
-            .state('servers.detail', {
+            .state('cars.detail', {
 
                 url: '/{serverId:[0-9]{1,4}}',
 
                 views: {
 
                     '': {
-                        templateUrl: 'app/servers/servers.detail.html',
-                        controller: ['$scope', '$state', '$cookieStore', '$stateParams', 'serversFactory', 'utils',
-                            function($scope, $state, $cookieStore, $stateParams, serversFactory, utils) {
+                        templateUrl: 'app/cars/cars.detail.html',
+                        controller: ['$scope', '$state', '$cookieStore', '$stateParams', 'carsFactory', 'utils',
+                            function($scope, $state, $cookieStore, $stateParams, carsFactory, utils) {
                                 if (!$cookieStore.get('cpm_token')) {
-                                    console.log('cpm_token not defined in servers');
+                                    console.log('cpm_token not defined in cars');
                                     $state.go('login', {
                                         userId: 'hi'
                                     });
                                 }
 
-                                if ($scope.servers.data.length > 0) {
-                                    angular.forEach($scope.servers.data, function(item) {
+                                if ($scope.cars.data.length > 0) {
+                                    angular.forEach($scope.cars.data, function(item) {
                                         if (item.ID == $stateParams.serverId) {
                                             $scope.server = item;
                                         }
@@ -237,12 +121,12 @@ angular.module('uiRouterSample.servers', [
                 }
             })
 
-            .state('servers.detail.item', {
+            .state('cars.detail.item', {
                 url: '/item/:itemId',
                 views: {
 
                     '': {
-                        templateUrl: 'app/servers/servers.detail.item.html',
+                        templateUrl: 'app/cars/cars.detail.item.html',
                         controller: ['$scope', '$stateParams', '$state', 'utils',
                             function($scope, $stateParams, $state, utils) {
                                 $scope.item = utils.findById($scope.server.items, $stateParams.itemId);
@@ -256,14 +140,14 @@ angular.module('uiRouterSample.servers', [
                 }
             })
 
-            .state('servers.detail.add', {
+            .state('cars.detail.add', {
                 url: '/add/:itemId',
                 views: {
 
                     '': {
-                        templateUrl: 'app/servers/servers.detail.add.html',
-                        controller: ['$scope', '$stateParams', '$state', 'serversFactory', 'utils',
-                            function($scope, $stateParams, $state, serversFactory, utils) {
+                        templateUrl: 'app/cars/cars.detail.add.html',
+                        controller: ['$scope', '$stateParams', '$state', 'carsFactory', 'utils',
+                            function($scope, $stateParams, $state, carsFactory, utils) {
 
                                 var newserver = {};
                                 newserver.ID = '0';
@@ -278,9 +162,9 @@ angular.module('uiRouterSample.servers', [
                                 $scope.add = function() {
                                     $scope.server.ID = 0; //0 means to do an insert
 
-                                    serversFactory.add($scope.server)
+                                    carsFactory.add($scope.server)
                                         .success(function(data) {
-                                            $state.go('servers.list', $stateParams, {
+                                            $state.go('cars.list', $stateParams, {
                                                 reload: true,
                                                 inherit: false
                                             });
@@ -298,16 +182,16 @@ angular.module('uiRouterSample.servers', [
                 }
             })
 
-            .state('servers.detail.details', {
+            .state('cars.detail.details', {
                 url: '/details/:itemId',
                 views: {
 
                     '': {
-                        templateUrl: 'app/servers/servers.detail.details.html',
-                        controller: ['$scope', '$stateParams', '$state', 'serversFactory', 'utils',
-                            function($scope, $stateParams, $state, serversFactory, utils) {
+                        templateUrl: 'app/cars/cars.detail.details.html',
+                        controller: ['$scope', '$stateParams', '$state', 'carsFactory', 'utils',
+                            function($scope, $stateParams, $state, carsFactory, utils) {
                                 $scope.save = function() {
-                                    serversFactory.add($scope.server)
+                                    carsFactory.add($scope.server)
                                         .success(function(data) {
                                             $scope.alerts = [{
                                                 type: 'success',
@@ -329,21 +213,21 @@ angular.module('uiRouterSample.servers', [
                 }
             })
 
-            .state('servers.detail.delete', {
+            .state('cars.detail.delete', {
                 url: '/delete/:itemId',
                 views: {
 
                     '': {
-                        templateUrl: 'app/servers/servers.detail.delete.html',
-                        controller: ['$scope', '$stateParams', '$state', 'serversFactory', 'utils',
-                            function($scope, $stateParams, $state, serversFactory, utils) {
+                        templateUrl: 'app/cars/cars.detail.delete.html',
+                        controller: ['$scope', '$stateParams', '$state', 'carsFactory', 'utils',
+                            function($scope, $stateParams, $state, carsFactory, utils) {
 
                                 var server = $scope.server;
                                 $scope.delete = function() {
-                                    serversFactory.delete($stateParams.serverId)
+                                    carsFactory.delete($stateParams.serverId)
                                         .success(function(data) {
-                                            $state.go('servers.list', {});
-                                            $state.go('servers.list', $stateParams, {
+                                            $state.go('cars.list', {});
+                                            $state.go('cars.list', $stateParams, {
                                                 reload: true,
                                                 inherit: false
                                             });
@@ -363,108 +247,9 @@ angular.module('uiRouterSample.servers', [
                 }
             })
 
-            .state('servers.detail.containers', {
-                url: '/containers/:itemId',
-                views: {
 
-                    '': {
-                        templateUrl: 'app/servers/servers.detail.containers.html',
-                        controller: ['$scope', '$stateParams', '$state', 'serversFactory', 'utils',
-                            function($scope, $stateParams, $state, serversFactory, utils) {
 
-                                var server = $scope.server;
 
-                                $scope.getContainers = function() {
-                                    serversFactory.containers($stateParams.serverId)
-                                        .success(function(data) {
-                                            $scope.containers = data;
-                                        })
-                                        .error(function(error) {
-                                            $scope.alerts = [{
-                                                type: 'danger',
-                                                msg: error.message
-                                            }];
-                                            console.log('here is an error ' + error.message);
-                                        });
-                                };
-
-                                $scope.getContainers();
-
-                            }
-                        ]
-                    },
-                }
-            })
-
-            .state('servers.detail.monitor', {
-                url: '/monitor/:itemId',
-                views: {
-
-                    '': {
-                        templateUrl: 'app/servers/servers.detail.monitor.html',
-                        controller: ['$scope', '$stateParams', '$state', 'utils',
-                            function($scope, $stateParams, $state, utils) {}
-                        ]
-                    },
-                }
-            })
-
-            .state('servers.detail.containers.start', {
-                url: '/start/:itemId',
-                views: {
-
-                    '': {
-                        templateUrl: 'app/servers/servers.detail.containers.start.html',
-                        controller: ['$scope', '$stateParams', '$state', 'serversFactory', 'utils',
-                            function($scope, $stateParams, $state, serversFactory, utils) {
-
-                                $scope.start = function() {
-                                    serversFactory.startall($scope.server.ID)
-                                        .success(function(data) {
-                                            //console.log('successful get in list =' + JSON.stringify(data));
-                                        })
-                                        .error(function(error) {
-                                            $scope.alerts = [{
-                                                type: 'danger',
-                                                msg: error.message
-                                            }];
-                                            console.log('here is an error ' + error.message);
-                                        });
-
-                                };
-                            }
-                        ]
-                    },
-                }
-            })
-
-            .state('servers.detail.containers.stop', {
-                url: '/stop/:itemId',
-                views: {
-
-                    '': {
-                        templateUrl: 'app/servers/servers.detail.containers.stop.html',
-                        controller: ['$scope', '$stateParams', '$state', 'serversFactory', 'utils',
-                            function($scope, $stateParams, $state, serversFactory, utils) {
-
-                                $scope.stop = function() {
-                                    serversFactory.stopall($scope.server.ID)
-                                        .success(function(data) {
-                                            //console.log('successful get in list =' + JSON.stringify(data));
-                                        })
-                                        .error(function(error) {
-                                            $scope.alerts = [{
-                                                type: 'danger',
-                                                msg: error.message
-                                            }];
-                                            console.log('here is an error ' + error.message);
-                                        });
-                                };
-                            }
-                        ]
-                    },
-                }
-            })
         }
     ]
 );
