@@ -1,0 +1,37 @@
+{
+	"ImportPath": "github.com/crunchydata/crunchy-postgres-container-client",
+	"GoVersion": "go1.4.2",
+	"Packages": [
+		"github.com/crunchydata/crunchy-postgres-container-client/backend"
+	],
+	"Deps": [
+		{
+			"ImportPath": "bitbucket.org/ww/goautoneg",
+			"Comment": "null-5",
+			"Rev": "75cd24fc2f2c2a2088577d12123ddee5f54e0675"
+		},
+		{
+			"ImportPath": "github.com/Sirupsen/logrus",
+			"Comment": "v0.7.2-4-gcdd90c3",
+			"Rev": "cdd90c38c6e3718c731b555b9c3ed1becebec3ba"
+		},
+		{
+			"ImportPath": "github.com/ant0ine/go-json-rest/rest",
+			"Comment": "v3.1.0",
+			"Rev": "fc0d6bacef3ca8295c53fb0232cc042734521394"
+		},
+		{
+			"ImportPath": "github.com/golang/protobuf/proto",
+			"Rev": "aece6fb931241ad332956db4f62798dfbea944b3"
+		},
+		{
+			"ImportPath": "github.com/lib/pq",
+			"Comment": "go1.0-cutoff-31-ga33d605",
+			"Rev": "a33d6053e025943d5dc89dfa1f35fe5500618df7"
+		},
+		{
+			"ImportPath": "github.com/matttproud/golang_protobuf_extensions/pbutil",
+			"Rev": "fc2b8d3a73c4867e51861bbdd5ae3c1f0869dd6a"
+		}
+	]
+}

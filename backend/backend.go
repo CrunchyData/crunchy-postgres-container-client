@@ -13,63 +13,14 @@
  limitations under the License.
 */
 
-package main
+package backend
 
 import (
 	"database/sql"
-	"flag"
 	"fmt"
-	"github.com/ant0ine/go-json-rest/rest"
-	"github.com/crunchydata/crunchy-pg-client/backend"
 	_ "github.com/lib/pq"
-	"log"
-	"net/http"
+	"strconv"
 )
-
-func init() {
-	fmt.Println("before parsing in init")
-	flag.Parse()
-
-}
-
-var CPMDIR = "/var/cpm/"
-var CPMBIN = CPMDIR + "bin/"
-
-func main() {
-
-	fmt.Println("at top of backend main")
-
-	var err error
-
-	handler := rest.ResourceHandler{
-		PreRoutingMiddlewares: []rest.Middleware{
-			&rest.CorsMiddleware{
-				RejectNonCorsRequests: false,
-				OriginValidator: func(origin string, request *rest.Request) bool {
-					return true
-				},
-				AllowedMethods: []string{"DELETE", "GET", "POST", "PUT"},
-				AllowedHeaders: []string{
-					"Accept", "Content-Type", "X-Custom-Header", "Origin"},
-				AccessControlAllowCredentials: true,
-				AccessControlMaxAge:           3600,
-			},
-		},
-		EnableRelaxedContentType: true,
-	}
-
-	err = handler.SetRoutes(
-		&rest.Route{"POST", "/car/add", backend.AddCar},
-		&rest.Route{"POST", "/car/update", backend.UpdateCar},
-		&rest.Route{"GET", "/car/list", backend.GetAllCars},
-		&rest.Route{"GET", "/car/:ID.", backend.GetCar},
-		&rest.Route{"POST", "/car/delete", backend.DeleteCar},
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Fatal(http.ListenAndServe(":13001", &handler))
-}
 
 type Car struct {
 	ID    string
@@ -79,13 +30,7 @@ type Car struct {
 	Brand string
 }
 
-func GetCar(w rest.ResponseWriter, r *rest.Request) {
-	ID := r.PathParam("ID")
-	if ID == "" {
-		fmt.Println("GetCar: ID not found in request")
-		rest.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+func GetCar(dbConn *sql.DB, ID string) (Car, error) {
 
 	fmt.Println("GetCar called with ID=" + ID)
 	car := Car{}
@@ -96,57 +41,44 @@ func GetCar(w rest.ResponseWriter, r *rest.Request) {
 	switch {
 	case err == sql.ErrNoRows:
 		fmt.Println("GetCar: no car found with ID " + ID)
-		rest.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return car, err
 	case err != nil:
 		fmt.Println("GetCar: error in get " + err.Error())
-		rest.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return car, err
 	}
 
-	w.WriteJson(&car)
+	return car, err
 }
 
-func GetAllCars(w rest.ResponseWriter, r *rest.Request) {
+func GetAllCars(dbConn *sql.DB) ([]Car, error) {
 	fmt.Println("GetAllCars:called")
 	var rows *sql.Rows
+	cars := make([]Car, 0)
 	var err error
 	rows, err = dbConn.Query("select id, model, price, year, brand) from car order by name")
 	if err != nil {
 		fmt.Println("GetAllCars: error " + err.Error())
-		rest.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return cars, err
 	}
 	defer rows.Close()
-	cars := make([]Car, 0)
 	for rows.Next() {
 		car := Car{}
 		if err = rows.Scan(&car.ID, &car.Model,
 			&car.Price, &car.Year, &car.Brand); err != nil {
 			fmt.Println("GetAllCars: error " + err.Error())
-			rest.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+			return cars, err
 		}
 		cars = append(cars, car)
 	}
 	if err = rows.Err(); err != nil {
 		fmt.Println("GetAllCars: error " + err.Error())
-		rest.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return cars, err
 	}
 
-	w.WriteJson(&cars)
+	return cars, err
 }
 
-func AddCar(w rest.ResponseWriter, r *rest.Request) {
-
-	car := Car{}
-	err = r.DecodeJsonPayload(&car)
-	if err != nil {
-		fmt.Println("AddCar: error in decode" + err.Error())
-		rest.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+func AddCar(dbConn *sql.DB, car Car) (string, error) {
 
 	fmt.Println("AddCar called")
 	queryStr := fmt.Sprintf("insert into car ( model, price, year, brand) values ( '%s', '%s', '%s', '%s') returning id", car.Model, car.Price, car.Year, car.Brand)
@@ -157,25 +89,15 @@ func AddCar(w rest.ResponseWriter, r *rest.Request) {
 	switch {
 	case err != nil:
 		fmt.Println(err.Error())
-		fmt.Println(err.Error())
-		rest.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return "", err
 	default:
 		fmt.Println("inserted car ID " + strconv.Itoa(carid))
 	}
 
-	w.WriteJson(&car)
+	return strconv.Itoa(carid), err
 }
 
-func UpdateCar(w rest.ResponseWriter, r *rest.Request) {
-
-	car := Car{}
-	err = r.DecodeJsonPayload(&car)
-	if err != nil {
-		fmt.Println("UpdateCar: error in decode" + err.Error())
-		rest.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+func UpdateCar(dbConn *sql.DB, car Car) error {
 
 	fmt.Println("UpdateServer:called")
 	queryStr := fmt.Sprintf("update car set ( model, price, year, brand) = ('%s', '%s', '%s', '%s') where id = %s returning id", car.Model, car.Price, car.Year, car.Brand, car.ID)
@@ -185,26 +107,16 @@ func UpdateCar(w rest.ResponseWriter, r *rest.Request) {
 	err := dbConn.QueryRow(queryStr).Scan(&carid)
 	switch {
 	case err != nil:
-		fmt.Println("UpdateCar: error in decode" + err.Error())
-		rest.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		fmt.Println("UpdateCar: error in query" + err.Error())
+		return err
 	default:
-		fmt.Println("UpdateCar:car updated " + carid)
+		fmt.Println("UpdateCar:car updated " + strconv.Itoa(carid))
 	}
 
-	var status = "OK"
-	w.WriteJson(&status)
+	return err
 }
 
-func DeleteCar(w rest.ResponseWriter, r *rest.Request) {
-
-	car := Car{}
-	err = r.DecodeJsonPayload(&car)
-	if err != nil {
-		fmt.Println("DeleteCar: error in decode" + err.Error())
-		rest.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+func DeleteCar(dbConn *sql.DB, id string) error {
 
 	queryStr := fmt.Sprintf("delete from car where  id=%s returning id", id)
 	fmt.Println(queryStr)
@@ -213,12 +125,10 @@ func DeleteCar(w rest.ResponseWriter, r *rest.Request) {
 	err := dbConn.QueryRow(queryStr).Scan(&carid)
 	switch {
 	case err != nil:
-		fmt.Println("DeleteCar: error in decode" + err.Error())
-		rest.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		fmt.Println("DeleteCar: error in query" + err.Error())
+		return err
 	default:
-		fmt.Println("DeleteCar:car deleted " + carid)
+		fmt.Println("DeleteCar:car deleted " + strconv.Itoa(carid))
 	}
-	var status = "OK"
-	w.WriteJson(&status)
+	return err
 }

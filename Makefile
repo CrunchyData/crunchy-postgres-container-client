@@ -2,10 +2,10 @@ OSFLAVOR=centos7
 
 gendeps:
 	godep save \
-	github.com/crunchydata/crunchy-pg-client/backend
+	github.com/crunchydata/crunchy-postgres-container-client
 
 build:
-	godep go install cmd/backend
+	godep go install cmd/backendapi.go
 
 image:
 ifeq ($(OSFLAVOR),centos7)
