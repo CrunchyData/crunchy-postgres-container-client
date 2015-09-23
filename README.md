@@ -10,11 +10,12 @@ to the REST API to test it or write your own UI client!
 ##REST API
 
 ~~~~~~~~~~~~~~~~~~~
+cd test
 curl http://crunchy-pg-client:13002/car/list
 curl http://crunchy-pg-client:13002/car/1
-curl -X POST @delete-car.json http://crunchy-pg-client:13002/car/delete
-curl -X POST @update-car.json http://crunchy-pg-client:13002/car/update
-curl -X POST @add-car.json http://crunchy-pg-client:13002/car/add
+curl -X POST -d @add-car.json http://crunchy-pg-client:13002/car/add
+curl -X POST -d @update-car.json http://crunchy-pg-client:13002/car/update
+curl -X POST -d @delete-car.json http://crunchy-pg-client:13002/car/delete
 ~~~~~~~~~~~~~~~~~~~
 
 ##Building the example:
