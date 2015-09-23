@@ -11,8 +11,9 @@ RUN mkdir -p /var/cpm/bin
 RUN mkdir -p /var/cpm/conf
 ADD bin /var/cpm/bin
 ADD conf /var/cpm/conf
+ADD www /www
 
-VOLUME ["/www"]
+#VOLUME ["/www"]
 RUN chown -R daemon:daemon /www
 
 RUN chown -R daemon:daemon /var/cpm
