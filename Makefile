@@ -13,5 +13,6 @@ ifeq ($(OSFLAVOR),centos7)
 else
 	cp Dockerfile.rhel7 Dockerfile
 endif
+	        cp ../../../../bin/backendapi ./bin
 	        sudo docker build -t crunchy-pg-client .
 		sudo docker tag -f crunchy-pg-client:latest crunchydata/crunchy-pg-client

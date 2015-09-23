@@ -53,13 +53,14 @@ func main() {
 		&rest.Route{"POST", "/car/add", AddCar},
 		&rest.Route{"POST", "/car/update", UpdateCar},
 		&rest.Route{"GET", "/car/list", GetAllCars},
-		&rest.Route{"GET", "/car/:ID.", GetCar},
+		&rest.Route{"GET", "/car/:ID", GetCar},
 		&rest.Route{"POST", "/car/delete", DeleteCar},
+		&rest.Route{"GET", "/conn/list", GetConn},
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Fatal(http.ListenAndServe(":13001", &handler))
+	log.Fatal(http.ListenAndServe(":13002", &handler))
 }
 
 func GetCar(w rest.ResponseWriter, r *rest.Request) {
@@ -220,4 +221,23 @@ func getConnection() (*sql.DB, error) {
 	dbConn, err := sql.Open("postgres", "sslmode=disable user="+user+" host="+host+" port="+port+" dbname="+database+" password="+password)
 	return dbConn, err
 
+}
+
+type ConnInfo struct {
+	PG_USER     string
+	PG_DATABASE string
+	PG_HOST     string
+	PG_PASSWORD string
+}
+
+func GetConn(w rest.ResponseWriter, r *rest.Request) {
+
+	fmt.Println("GetConn called")
+
+	conn := ConnInfo{}
+	conn.PG_USER = os.Getenv("PG_USER")
+	conn.PG_DATABASE = os.Getenv("PG_DATABASE")
+	conn.PG_HOST = os.Getenv("PG_HOST")
+	conn.PG_PASSWORD = os.Getenv("PG_PASSWORD")
+	w.WriteJson(&conn)
 }

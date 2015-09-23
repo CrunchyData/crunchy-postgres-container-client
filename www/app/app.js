@@ -70,7 +70,7 @@ angular.module('uiRouterSample', [
                 // For top level states, like this one, the parent template is
                 // the index.html file. So this template will be inserted into the
                 // ui-view within index.html.
-                //template: '<p class="lead">Welcome to Crunchy PostgreSQL Manager</p>' +
+                //template: '<p class="lead">Crunchy PostgreSQL Container Client</p>' +
                 //'<p>Use the menu above to navigate. ' +
                 //'<p><a href="#/authn">Login</a> or ' +
                 //'<p>Click these links—<a href="#/c?id=1">Alice</a> or ' +
@@ -89,25 +89,6 @@ angular.module('uiRouterSample', [
                 }
             })
 
-            ///////////
-            // About //
-            ///////////
-
-            .state('about', {
-                url: '/about',
-
-                // Showing off how you could return a promise from templateProvider
-                templateProvider: ['$timeout',
-                    function($timeout) {
-                        return $timeout(function() {
-                            return '<p class="lead">CPM Resources</p><ul>' +
-                                '<li><a href="https://github.com/crunchydata/crunchy-postgresql-manager">Source for CPM</a></li>' +
-                                '<li>Version 0.9.5</li>' +
-                                '</ul>';
-                        }, 100);
-                    }
-                ]
-            })
 
         }
     ]

@@ -54,15 +54,10 @@ angular.module('uiRouterSample.home', [
                         controller: ['$scope', '$state', '$cookieStore', '$stateParams', 'utils', 'homeFactory',
                             function($scope, $state, $cookieStore, $stateParams, utils, homeFactory) {
                                 console.log('here in home 2');
-				if (!$cookieStore.get('cpm_token')) {
-					$state.go('login', {
-						userId: 'hi'
-					});
-				}
 
-                                homeFactory.healthcheck()
+                                homeFactory.getconn()
                                     .success(function(data) {
-                                        $scope.hcdata = data;
+                                        $scope.conn = data;
                                     }).error(function(error) {
                                         $scope.alerts = [{
                                             type: 'danger',

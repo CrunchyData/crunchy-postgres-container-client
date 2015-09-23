@@ -6,47 +6,59 @@ angular.module('uiRouterSample.cars.service', ['ngCookies'])
     var carsFactory = {};
 
     carsFactory.all = function() {
-        var url = $cookieStore.get('AdminURL') + '/cars/' + $cookieStore.get('cpm_token');
+        var url = 'http://crunchy-pg-client:13002/car/list';
         console.log(url);
 
         return $http.get(url);
     };
 
 
-    carsFactory.get = function(serverid) {
+    carsFactory.get = function(carid) {
 
-        var url = $cookieStore.get('AdminURL') + '/server/' + serverid + '.' + $cookieStore.get('cpm_token');
+        var url = 'http://crunchy-pg-client:13002/car/' + carid;
         console.log(url);
 
         return $http.get(url);
     };
 
 
-    carsFactory.delete = function(serverid) {
+    carsFactory.delete = function(carid) {
 
-        var url = $cookieStore.get('AdminURL') + '/deleteserver/' + serverid + '.' + $cookieStore.get('cpm_token');
+        var url = 'http://crunchy-pg-client:13002/car/delete';
         console.log(url);
 
-        return $http.get(url);
+        return $http.post(url, {
+		'ID' : carid,
+	});
+    };
+
+    carsFactory.update = function(car) {
+
+        var url = 'http://crunchy-pg-client:13002/car/update';
+        console.log(url);
+
+        return $http.post(url, {
+		'ID' : car.ID,
+		'Model' : car.Model,
+		'Brand' : car.Brand,
+		'Year' : car.Year,
+		'Price' : car.Price,
+	});
     };
 
 
-    carsFactory.add = function(server) {
+    carsFactory.add = function(car) {
 
-        var cleanip = server.IPAddress.replace(/\./g, "_");
-        var cleandockerip = server.DockerBridgeIP.replace(/\./g, "_");
-        var cleanpath = server.PGDataPath.replace(/\//g, "_");
 
-        var url = $cookieStore.get('AdminURL') + '/addserver/' +
-            server.ID + '.' +
-            server.Name + '.' +
-            cleanip + '.' +
-            cleandockerip + '.' +
-            cleanpath + '.' +
-            server.ServerClass + '.' + $cookieStore.get('cpm_token');
+        var url = 'http://crunchy-pg-client:13002' + '/car/add';
         console.log(url);
 
-        return $http.get(url);
+        return $http.post(url, {
+		'Model' : car.Model,
+		'Brand' : car.Brand,
+		'Year' : car.Year,
+		'Price' : car.Price,
+	});
     };
 
     return carsFactory;

@@ -1,26 +1,13 @@
 <div>
-    <h2>{{server.Name}}</h2>
+	<h2>{{car.Model}} {{car.Brand}} {{car.Year}}</h2>
     <div class="navbar-inner">
         <div class="container">
             <ul class="nav navbar-nav navbar-left">
                 <li>
-                    <a ui-sref="servers.detail.add()"><i class="fa fa-plus fa-fw"></i>Add</a>
+                    <a ui-sref="cars.detail.add()"><i class="fa fa-plus fa-fw"></i>Add</a>
                 </li>
                 <li>
-                    <a ui-sref="servers.detail.delete()"><i class="fa fa-trash fa-fw"></i>Delete</a>
-                </li>
-                <li>
-                    <a ui-sref="servers.detail.containers()"><i class="fa fa-cloud fa-fw"></i>Containers</a>
-                </li>
-                <li class="dropdown" dropdown on-toggle="toggled(open)">
-                    <a href class="dropdown-toggle" dropdown-toggle><i class="fa fa-bar-chart fa-fw"></i>Monitor</a>
-                    <ul class="dropdown-menu">
-                        <li><a ui-sref="servers.detail.monitor.df()">df</a></li>
-                        <li><a ui-sref="servers.detail.monitor.iostat()">iostat</a></li>
-                        <li><a ui-sref="servers.detail.monitor.cpu()">cpu</a></li>
-                        <li><a ui-sref="servers.detail.monitor.mem()">mem</a></li>
-
-                    </ul>
+                    <a ui-sref="cars.detail.delete()"><i class="fa fa-trash fa-fw"></i>Delete</a>
                 </li>
             </ul>
         </div>

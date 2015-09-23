@@ -5,8 +5,8 @@ angular.module('uiRouterSample.home.service', ['ngCookies'])
 
     var factory = {};
 
-    factory.healthcheck = function() {
-     	var url = $cookieStore.get('AdminURL') + '/mon/healthcheck/' + $cookieStore.get('cpm_token');
+    factory.getconn = function() {
+     	var url = 'http://crunchy-pg-client:13002/conn/list';
        	console.log(url);
 	return $http.get(url);
     };

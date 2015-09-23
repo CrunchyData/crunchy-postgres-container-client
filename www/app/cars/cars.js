@@ -18,12 +18,6 @@ angular.module('uiRouterSample.cars', [
                     resolve: {
                         cars: ['$cookieStore', 'carsFactory',
                             function($cookieStore, carsFactory) {
-                                if (!$cookieStore.get('cpm_token')) {
-                                    var nothing = [];
-                                    console.log('returning nothing');
-                                    return nothing;
-                                }
-
                                 return carsFactory.all();
                             }
                         ]
@@ -32,21 +26,16 @@ angular.module('uiRouterSample.cars', [
                     controller: ['$scope', '$state', '$cookieStore', 'utils', 'cars',
                         function($scope, $state, $cookieStore, utils, cars) {
 
-                            if (!$cookieStore.get('cpm_token')) {
-                                $state.go('login', {
-                                    userId: 'hi'
-                                });
-                            }
-
                             $scope.cars = cars;
 
                             $scope.goToFirst = function() {
+			    	console.log(JSON.stringify($scope.cars));
                                 if ($scope.cars.data.length > 0) {
                                     //console.log($scope.cars.data[0].ID);
                                     var randId = $scope.cars.data[0].ID;
 
                                     $state.go('cars.detail.details', {
-                                        serverId: randId
+                                        carId: randId
                                     });
                                 }
                             };
@@ -80,7 +69,7 @@ angular.module('uiRouterSample.cars', [
                         if ($scope.cars.data.length > 0) {
                         	var randId = $scope.cars.data[0].ID;
                             $state.go('cars.detail.details', {
-                                serverId: randId
+                                carId: randId
                             });
                         }
                     }
@@ -91,7 +80,7 @@ angular.module('uiRouterSample.cars', [
 
             .state('cars.detail', {
 
-                url: '/{serverId:[0-9]{1,4}}',
+                url: '/{carId:[0-9]{1,4}}',
 
                 views: {
 
@@ -99,17 +88,11 @@ angular.module('uiRouterSample.cars', [
                         templateUrl: 'app/cars/cars.detail.html',
                         controller: ['$scope', '$state', '$cookieStore', '$stateParams', 'carsFactory', 'utils',
                             function($scope, $state, $cookieStore, $stateParams, carsFactory, utils) {
-                                if (!$cookieStore.get('cpm_token')) {
-                                    console.log('cpm_token not defined in cars');
-                                    $state.go('login', {
-                                        userId: 'hi'
-                                    });
-                                }
 
                                 if ($scope.cars.data.length > 0) {
                                     angular.forEach($scope.cars.data, function(item) {
-                                        if (item.ID == $stateParams.serverId) {
-                                            $scope.server = item;
+                                        if (item.ID == $stateParams.carId) {
+                                            $scope.car = item;
                                         }
                                     });
                                 }
@@ -129,7 +112,7 @@ angular.module('uiRouterSample.cars', [
                         templateUrl: 'app/cars/cars.detail.item.html',
                         controller: ['$scope', '$stateParams', '$state', 'utils',
                             function($scope, $stateParams, $state, utils) {
-                                $scope.item = utils.findById($scope.server.items, $stateParams.itemId);
+                                $scope.item = utils.findById($scope.car.items, $stateParams.itemId);
 
                                 $scope.edit = function() {
                                     $state.go('.edit', $stateParams);
@@ -149,20 +132,20 @@ angular.module('uiRouterSample.cars', [
                         controller: ['$scope', '$stateParams', '$state', 'carsFactory', 'utils',
                             function($scope, $stateParams, $state, carsFactory, utils) {
 
-                                var newserver = {};
-                                newserver.ID = '0';
-                                newserver.Name = 'newserver';
-                                newserver.IPAddress = '1.1.1.1';
-                                newserver.DockerBridgeIP = '172.17.42.1';
-                                newserver.PGDataPath = '/var/cpm/data/pgsql';
-                                newserver.ServerClass = 'low';
-                                newserver.CreateDate = '00';
-                                $scope.server = newserver;
+                                var newcar = {};
+                                newcar.ID = '0';
+                                newcar.Name = 'newcar';
+                                newcar.IPAddress = '1.1.1.1';
+                                newcar.DockerBridgeIP = '172.17.42.1';
+                                newcar.PGDataPath = '/var/cpm/data/pgsql';
+                                newcar.ServerClass = 'low';
+                                newcar.CreateDate = '00';
+                                $scope.car = newcar;
 
                                 $scope.add = function() {
-                                    $scope.server.ID = 0; //0 means to do an insert
+                                    $scope.car.ID = 0; //0 means to do an insert
 
-                                    carsFactory.add($scope.server)
+                                    carsFactory.add($scope.car)
                                         .success(function(data) {
                                             $state.go('cars.list', $stateParams, {
                                                 reload: true,
@@ -191,7 +174,7 @@ angular.module('uiRouterSample.cars', [
                         controller: ['$scope', '$stateParams', '$state', 'carsFactory', 'utils',
                             function($scope, $stateParams, $state, carsFactory, utils) {
                                 $scope.save = function() {
-                                    carsFactory.add($scope.server)
+                                    carsFactory.update($scope.car)
                                         .success(function(data) {
                                             $scope.alerts = [{
                                                 type: 'success',
@@ -222,9 +205,9 @@ angular.module('uiRouterSample.cars', [
                         controller: ['$scope', '$stateParams', '$state', 'carsFactory', 'utils',
                             function($scope, $stateParams, $state, carsFactory, utils) {
 
-                                var server = $scope.server;
+                                var car = $scope.car;
                                 $scope.delete = function() {
-                                    carsFactory.delete($stateParams.serverId)
+                                    carsFactory.delete($stateParams.carId)
                                         .success(function(data) {
                                             $state.go('cars.list', {});
                                             $state.go('cars.list', $stateParams, {

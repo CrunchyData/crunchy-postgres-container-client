@@ -2,14 +2,14 @@
   <div class="col-sm-3 col-md-2 sidebar">
     <div class="pa-sidebar well well-small">
       <ul class="nav nav-list" style="overflow:hidden; overflow-y:scroll; height:300px;">
-	      <p class="nav-header"><strong>Servers</strong></p>
+	      <p class="nav-header"><strong>Cars</strong></p>
 
-        <!-- This <li> will only add the 'active' class if 'servers.detail' or its descendants are active
-             AND if it is the link for the active server (aka serverId) -->
-        <li ng-repeat="server in servers.data" ui-sref-active="active">
+        <!-- This <li> will only add the 'active' class if 'cars.detail' or its descendants are active
+             AND if it is the link for the active car (aka carId) -->
+        <li ng-repeat="car in cars.data" ui-sref-active="active">
 
           <!-- Here's a ui-sref that is also providing necessary parameters -->
-          <a ui-sref="servers.detail.details({serverId:server.ID})">{{server.Name}}</a>
+	  <a ui-sref="cars.detail.details({carId:car.ID})">{{car.Brand}} {{car.Model}} {{car.Year}}</a>
         </li>
       </ul>
       <hr>

@@ -5,6 +5,7 @@ RUN rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos
 RUN yum install -y procps-ng nginx which hostname && yum clean all -y
 
 EXPOSE 13001
+EXPOSE 13002
 
 RUN mkdir -p /var/cpm/bin
 RUN mkdir -p /var/cpm/conf

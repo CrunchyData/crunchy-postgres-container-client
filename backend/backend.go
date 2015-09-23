@@ -55,7 +55,7 @@ func GetAllCars(dbConn *sql.DB) ([]Car, error) {
 	var rows *sql.Rows
 	cars := make([]Car, 0)
 	var err error
-	rows, err = dbConn.Query("select id, model, price, year, brand) from car order by name")
+	rows, err = dbConn.Query("select id, model, price, year, brand from car order by brand, model, year")
 	if err != nil {
 		fmt.Println("GetAllCars: error " + err.Error())
 		return cars, err

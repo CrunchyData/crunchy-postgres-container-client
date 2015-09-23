@@ -7,3 +7,6 @@ create table car (
 	brand varchar(40) unique not null
 );
 
+insert into car (model, price, year, brand) 
+values ('silverado', '39,000', '2015', 'Chevrolet');
+

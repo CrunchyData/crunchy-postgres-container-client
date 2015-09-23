@@ -1,36 +1,26 @@
 <form class="form-horizontal">
 	<div class="form-group">
-		<label for="inputName" class="control-label col-xs-2">Name</label>
+		<label for="inputModel" class="control-label col-xs-2">Model</label>
 		<div class="col-xs-5">
-			<input type="text" class="form-control" id="inputName" ng-model="server.Name">
+			<input type="text" class="form-control" id="inputModel" ng-model="car.Model">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="inputIP" class="control-label col-xs-2">IP Address</label>
+		<label for="inputBrand" class="control-label col-xs-2">Brand</label>
 		<div class="col-xs-5">
-			<input type="text" class="form-control" id="inputIP" ng-model="server.IPAddress">
+			<input type="text" class="form-control" id="inputBrand" ng-model="car.Brand">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="inputDockerIP" class="control-label col-xs-2">Docker IP</label>
+		<label for="inputYear" class="control-label col-xs-2">Year</label>
 		<div class="col-xs-5">
-			<input type="text" class="form-control" id="inputDockerIP" ng-model="server.DockerBridgeIP">
+			<input type="text" class="form-control" id="inputYear" ng-model="car.Year">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="inputPgdata" class="control-label col-xs-2">PGDATA</label>
+		<label for="inputPrice" class="control-label col-xs-2">Price</label>
 		<div class="col-xs-5">
-			<input type="text" class="form-control" id="inputPgdata" ng-model="server.PGDataPath">
-		</div>
-	</div>
-	<div class="form-group">
-		<label for="inputServerClass" class="control-label col-xs-2">Server Class</label>
-		<div class="col-xs-5">
-<select ng-model="server.ServerClass" class="form-control" id="inputServerClass">
-<option value="low">low</option>
-<option value="medium">medium</option>
-<option value="high">high</option>
-</select>
+			<input type="text" class="form-control" id="inputPrice" ng-model="car.Price">
 		</div>
 	</div>
 	<div>
