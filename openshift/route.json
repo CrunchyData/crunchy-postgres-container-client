@@ -1,0 +1,14 @@
+{
+  "kind": "Route",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "crunchy-pg-client-route"
+  },
+  "spec": {
+    "host": "crunchy-pg-client.crunchy.lab",
+    "to": {
+      "kind": "Service",
+      "name": "crunchy-pg-client"
+    }
+  }
+}

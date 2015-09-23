@@ -16,10 +16,16 @@
                 "portalIP": "None",
                 "ports": [
                     {
-                        "nodePort": 0,
+                        "name": "webapp",
                         "port": 13001,
                         "protocol": "TCP",
                         "targetPort": 13001
+                    },
+                    {
+                        "name": "api",
+                        "port": 13002,
+                        "protocol": "TCP",
+                        "targetPort": 13002
                     }
                 ],
                 "selector": {
@@ -67,6 +73,10 @@
                         "ports": [
                             {
                                 "containerPort": 13001,
+                                "protocol": "TCP"
+                            },
+                            {
+                                "containerPort": 13002,
                                 "protocol": "TCP"
                             }
                         ],
